@@ -1,0 +1,17 @@
+.venv
+run.sh
+
+# 模型和权重文件
+/pretrained
+/pretrained_v2
+/uvr5_weights
+hubert_base.pt
+rmvpe.onnx
+rmvpe.pt
+/logs
+/weights
+/assets/weights/*
+
+# 工具文件
+ffmpeg.*
+ffprobe.*
