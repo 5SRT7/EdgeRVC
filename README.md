@@ -1,7 +1,7 @@
 # EdgeRVC - 文本转语音与语音转换Web界面
 
 <div align="center">
-  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=EdgeRVC%20text%20to%20speech%20and%20voice%20conversion%20web%20interface%20logo%2C%20modern%20design%2C%20blue%20and%20purple%20gradient%2C%20professional%20looking&image_size=square_hd" alt="EdgeRVC Logo" width="200" height="200">
+  <img src="https://raw.githubusercontent.com/5SRT7/EdgeRVC/main/logo.png" alt="EdgeRVC Logo" width="400" height="200">
   <p>一个基于检索的语音转换Web界面，支持文本转语音、SRT文件导入和语音变声功能</p>
 </div>
 
@@ -95,7 +95,6 @@ RVC需要其他一些预模型来推理和训练。
 
 - `./assets/hubert/hubert_base.pt`
 - `./assets/pretrained`
-- `./assets/uvr5_weights`
 
 想使用v2版本模型的话，需要额外下载：
 
