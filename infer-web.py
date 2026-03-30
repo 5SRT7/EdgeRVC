@@ -152,6 +152,7 @@ language_dict = {
         "srt_input": "SRT文件导入",
         "text_placeholder": "请输入要转换为语音的文本",
         "srt_label": "上传SRT字幕文件",
+        "srt_placeholder": "拖放文件至此处或点击上传",
         "voice_label": "选择语音",
         "speed_label": "语音速度",
         "refresh_button": "刷新音色列表",
@@ -193,6 +194,7 @@ language_dict = {
         "srt_input": "SRT File Import",
         "text_placeholder": "Please enter text to convert to speech",
         "srt_label": "Upload SRT Subtitle File",
+        "srt_placeholder": "Drag and drop files here or click to upload",
         "voice_label": "Select Voice",
         "speed_label": "Speech Speed",
         "refresh_button": "Refresh Voice List",
@@ -235,7 +237,7 @@ def update_language(language):
         gr.update(value=lang["section_desc"]),
         gr.update(label=lang["input_mode"], choices=[lang["text_input"], lang["srt_input"]], value=lang["text_input"]),
         gr.update(label=lang["text_input"], placeholder=lang["text_placeholder"]),
-        gr.update(label=lang["srt_label"]),
+        gr.update(label=lang["srt_label"], placeholder=lang["srt_placeholder"]),
         gr.update(label=lang["voice_label"]),
         gr.update(label=lang["speed_label"]),
         gr.update(value=lang["refresh_button"]),
@@ -297,6 +299,7 @@ with gr.Blocks(title="EdgeRVC") as app:
         file_types=[".srt"],
         visible=False,
         interactive=True,
+        placeholder="拖放文件至此处或点击上传"
     )
     
     with gr.Row():
