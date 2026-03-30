@@ -139,15 +139,141 @@ sr_dict = {
 
 
 
-with gr.Blocks(title="RVC WebUI") as app:
-    gr.Markdown("## RVC WebUI")
-    gr.Markdown(
-        value="本软件以MIT协议开源, 作者不对软件具备任何控制力, 使用软件者、传播软件导出的声音者自负全责. <br>如不认可该条款, 则不能使用或引用软件包内任何代码和文件. 详见根目录<b>LICENSE</b>."
+# 语言映射
+language_dict = {
+    "中文": {
+        "title": "EdgeRVC - 文本转语音与语音转换",
+        "header": "## EdgeRVC",
+        "disclaimer": "本软件作者不对软件具备任何控制力, 使用软件者、传播软件导出的声音者自负全责. <br>如不认可该条款, 则不能使用或引用软件包内任何代码和文件.",
+        "section_title": "## 文本转语音 & 变声",
+        "section_desc": "输入文本，使用 Edge TTS 生成语音，然后通过 RVC 进行变声处理",
+        "input_mode": "输入方式",
+        "text_input": "文本输入",
+        "srt_input": "SRT文件导入",
+        "text_placeholder": "请输入要转换为语音的文本",
+        "srt_label": "上传SRT字幕文件",
+        "voice_label": "选择语音",
+        "speed_label": "语音速度",
+        "refresh_button": "刷新音色列表",
+        "voice_model_label": "变声音色",
+        "speaker_id_label": "请选择说话人id",
+        "pitch_label": "变调(整数, 半音数量, 升八度12降八度-12)",
+        "f0_method_label": "选择音高提取算法",
+        "index_label": "特征检索库文件路径(自动检测)",
+        "index_rate_label": "检索特征占比",
+        "resample_label": "后处理重采样至最终采样率，0为不进行重采样",
+        "format_label": "导出文件格式",
+        "save_dir_label": "保存目录",
+        "save_dir_placeholder": "请输入保存目录路径",
+        "protect_label": "保护清辅音和呼吸声，防止电音撕裂等artifact，拉满0.5不开启，调低加大保护力度但可能降低索引效果",
+        "generate_button": "生成语音并变声",
+        "output_audio_label": "输出音频",
+        "output_info_label": "输出信息",
+        "delete_button": "删除音频",
+        "error_no_text": "错误：请输入文本或上传SRT文件",
+        "error_no_srt_text": "错误：SRT文件中没有找到文本",
+        "error_voice_unavailable": "错误：语音 '{voice}' 不可用，请尝试其他语音",
+        "error_connection": "错误：无法连接到语音合成服务，请检查网络连接或稍后重试",
+        "error_tts_failed": "错误：语音合成失败 - {error}",
+        "error_no_audio": "错误：无法生成语音文件",
+        "save_success": "音频已保留在: {path}",
+        "save_no_file": "没有可保留的音频文件",
+        "delete_success": "音频已删除: {path}",
+        "delete_failed": "删除失败: {error}",
+        "delete_no_file": "没有可删除的音频文件"
+    },
+    "English": {
+        "title": "EdgeRVC - Text-to-Speech and Voice Conversion",
+        "header": "## EdgeRVC",
+        "disclaimer": "The author of this software has no control over the software. Users of the software and those who distribute voices exported by the software are solely responsible. If you do not agree to this clause, you cannot use or reference any code or files in the software package.",
+        "section_title": "## Text-to-Speech & Voice Conversion",
+        "section_desc": "Enter text, generate speech using Edge TTS, then convert voice using RVC",
+        "input_mode": "Input Mode",
+        "text_input": "Text Input",
+        "srt_input": "SRT File Import",
+        "text_placeholder": "Please enter text to convert to speech",
+        "srt_label": "Upload SRT Subtitle File",
+        "voice_label": "Select Voice",
+        "speed_label": "Speech Speed",
+        "refresh_button": "Refresh Voice List",
+        "voice_model_label": "Voice Model",
+        "speaker_id_label": "Please select speaker ID",
+        "pitch_label": "Pitch Shift (integer, number of semitones, +12 for octave up, -12 for octave down)",
+        "f0_method_label": "Select Pitch Extraction Algorithm",
+        "index_label": "Feature Index File Path (auto-detected)",
+        "index_rate_label": "Feature Retrieval Ratio",
+        "resample_label": "Post-processing resampling to final sample rate, 0 for no resampling",
+        "format_label": "Export File Format",
+        "save_dir_label": "Save Directory",
+        "save_dir_placeholder": "Please enter save directory path",
+        "protect_label": "Protect consonants and breathing sounds, prevent artifacts like electric tearing, 0.5 means disabled, lower values increase protection but may reduce index effect",
+        "generate_button": "Generate Speech and Convert Voice",
+        "output_audio_label": "Output Audio",
+        "output_info_label": "Output Information",
+        "delete_button": "Delete Audio",
+        "error_no_text": "Error: Please enter text or upload SRT file",
+        "error_no_srt_text": "Error: No text found in SRT file",
+        "error_voice_unavailable": "Error: Voice '{voice}' is unavailable, please try another voice",
+        "error_connection": "Error: Unable to connect to speech synthesis service, please check network connection or try again later",
+        "error_tts_failed": "Error: Speech synthesis failed - {error}",
+        "error_no_audio": "Error: Unable to generate audio file",
+        "save_success": "Audio has been saved at: {path}",
+        "save_no_file": "No audio file to save",
+        "delete_success": "Audio has been deleted: {path}",
+        "delete_failed": "Deletion failed: {error}",
+        "delete_no_file": "No audio file to delete"
+    }
+}
+
+# 语言切换函数
+def update_language(language):
+    lang = language_dict[language]
+    return (
+        gr.update(value=lang["header"]),
+        gr.update(value=lang["disclaimer"]),
+        gr.update(value=lang["section_title"]),
+        gr.update(value=lang["section_desc"]),
+        gr.update(label=lang["input_mode"], choices=[lang["text_input"], lang["srt_input"]], value=lang["text_input"]),
+        gr.update(label=lang["text_input"], placeholder=lang["text_placeholder"]),
+        gr.update(label=lang["srt_label"]),
+        gr.update(label=lang["voice_label"]),
+        gr.update(label=lang["speed_label"]),
+        gr.update(value=lang["refresh_button"]),
+        gr.update(label=lang["voice_model_label"]),
+        gr.update(label=lang["speaker_id_label"]),
+        gr.update(label=lang["pitch_label"]),
+        gr.update(label=lang["f0_method_label"]),
+        gr.update(label=lang["index_label"]),
+        gr.update(label=lang["index_rate_label"]),
+        gr.update(label=lang["resample_label"]),
+        gr.update(label=lang["format_label"]),
+        gr.update(label=lang["save_dir_label"], placeholder=lang["save_dir_placeholder"]),
+        gr.update(label=lang["protect_label"]),
+        gr.update(value=lang["generate_button"]),
+        gr.update(label=lang["output_audio_label"]),
+        gr.update(label=lang["output_info_label"]),
+        gr.update(value=lang["delete_button"])
+    )
+
+with gr.Blocks(title="EdgeRVC") as app:
+    # 语言选择
+    with gr.Row():
+        language = gr.Dropdown(
+            label="Language / 语言",
+            choices=["中文", "English"],
+            value="中文",
+            interactive=True
+        )
+    
+    # UI组件
+    header = gr.Markdown("## EdgeRVC")
+    disclaimer = gr.Markdown(
+        value="本软件作者不对软件具备任何控制力, 使用软件者、传播软件导出的声音者自负全责. <br>如不认可该条款, 则不能使用或引用软件包内任何代码和文件."
     )
     
     # 只保留文本转语音界面，不使用Tabs
-    gr.Markdown("## 文本转语音 & 变声")
-    gr.Markdown("输入文本，使用 Edge TTS 生成语音，然后通过 RVC 进行变声处理")
+    section_title = gr.Markdown("## 文本转语音 & 变声")
+    section_desc = gr.Markdown("输入文本，使用 Edge TTS 生成语音，然后通过 RVC 进行变声处理")
     
     # 输入方式选择
     input_mode = gr.Radio(
@@ -295,6 +421,38 @@ with gr.Blocks(title="RVC WebUI") as app:
         tts_output_info = gr.Textbox(label="输出信息", lines=4, interactive=False)
     with gr.Row():
         delete_button = gr.Button("删除音频", variant="stop")
+    
+    # 绑定语言切换事件
+    language.change(
+        fn=update_language,
+        inputs=[language],
+        outputs=[
+            header,
+            disclaimer,
+            section_title,
+            section_desc,
+            input_mode,
+            text_input,
+            srt_file,
+            voice,
+            speed,
+            refresh_button,
+            tts_sid,
+            tts_spk_item,
+            tts_vc_transform,
+            tts_f0method,
+            tts_file_index2,
+            tts_index_rate,
+            tts_resample_sr,
+            tts_format,
+            tts_save_dir,
+            protect,
+            tts_button,
+            tts_output_audio,
+            tts_output_info,
+            delete_button
+        ]
+    )
     
     # 绑定音色选择事件
     tts_sid.change(
@@ -494,8 +652,9 @@ with gr.Blocks(title="RVC WebUI") as app:
     )
     
     # 输入方式切换函数
-    def update_input_visibility(mode):
-        if mode == "文本输入":
+    def update_input_visibility(mode, language):
+        lang = language_dict[language]
+        if mode == lang["text_input"]:
             return (
                 gr.update(visible=True),
                 gr.update(visible=False)
@@ -509,7 +668,7 @@ with gr.Blocks(title="RVC WebUI") as app:
     # 绑定输入方式切换事件
     input_mode.change(
         fn=update_input_visibility,
-        inputs=[input_mode],
+        inputs=[input_mode, language],
         outputs=[text_input, srt_file]
     )
 
