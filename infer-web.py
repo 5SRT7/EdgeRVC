@@ -503,7 +503,7 @@ with gr.Blocks(title="EdgeRVC") as app:
         return ' '.join(text_parts)
     
     # 文本转语音并变声的函数
-    async def text_to_speech_and_convert(input_mode, text, srt_file, voice, speed, spk_item, f0_up_key, f0_method, file_index2, index_rate, resample_sr, format1, save_dir):
+    async def text_to_speech_and_convert(input_mode, text, srt_file, voice, speed, spk_item, f0_up_key, f0_method, file_index2, index_rate, resample_sr, format1, save_dir, language):
         global current_save_dir, current_output_file
         try:
             # 确保保存目录存在
@@ -514,13 +514,14 @@ with gr.Blocks(title="EdgeRVC") as app:
             current_save_dir = save_dir
 
             # 根据输入方式获取文本
-            if input_mode == "SRT文件导入" and srt_file:
+            lang = language_dict[language]
+            if input_mode == lang["srt_input"] and srt_file:
                 # 解析SRT文件
                 text = parse_srt(srt_file.name)
                 if not text:
-                    return "错误：SRT文件中没有找到文本", None
+                    return lang["error_no_srt_text"], None
             elif not text:
-                return "错误：请输入文本或上传SRT文件", None
+                return lang["error_no_text"], None
             
             
             # 生成临时文件路径
@@ -629,6 +630,7 @@ with gr.Blocks(title="EdgeRVC") as app:
             tts_resample_sr,
             tts_format,
             tts_save_dir,
+            language,
         ],
         outputs=[tts_output_info, tts_output_audio],
     )
