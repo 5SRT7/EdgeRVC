@@ -237,7 +237,7 @@ def update_language(language):
         gr.update(value=lang["section_desc"]),
         gr.update(label=lang["input_mode"], choices=[lang["text_input"], lang["srt_input"]], value=lang["text_input"]),
         gr.update(label=lang["text_input"], placeholder=lang["text_placeholder"]),
-        gr.update(label=lang["srt_label"], placeholder=lang["srt_placeholder"]),
+        gr.update(label=lang["srt_label"]),
         gr.update(label=lang["voice_label"]),
         gr.update(label=lang["speed_label"]),
         gr.update(value=lang["refresh_button"]),
@@ -298,8 +298,7 @@ with gr.Blocks(title="EdgeRVC") as app:
         label="上传SRT字幕文件",
         file_types=[".srt"],
         visible=False,
-        interactive=True,
-        placeholder="拖放文件至此处或点击上传"
+        interactive=True
     )
     
     with gr.Row():
